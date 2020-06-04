@@ -5,28 +5,50 @@
             <dx-chart
                 id="chart"
                 title="Stock Price"
-                [dataSource]="data">
-
+                [dataSource]="data"
+                (onLegendClick)="legendClick($event)">
+                
+                <dxo-loading-indicator [enabled]="true"></dxo-loading-indicator>
+                <dxi-series 
+                    type="spline"
+                    valueField="close"
+                    pane="Stock"
+                    name="Close"
+                    color="#6b71c3">
+                </dxi-series>
+                <!-- stock data -->
                 <dxi-series
-                    name="DELL"
+                    pane="Stock"
+                    type="candlestick"
+                    name="Stock price"
                     openValueField="open"
                     highValueField="high"
                     lowValueField="low"
                     closeValueField="close">
+                    <dxo-size
+                        [height]="600">
+                    </dxo-size>
+                   <dxo-aggregation
+                        [enabled]="true">
+                    </dxo-aggregation>
                     <dxo-reduction color="red"></dxo-reduction>
                 </dxi-series>
-                <!-- common configurations for all the series in the chart -->
-                <dxo-common-series-settings
-                    argumentField="time"
-                    type="candlestick">
-                </dxo-common-series-settings>
-                <!-- X axis options-->
-                <dxo-argument-axis [workdaysOnly]="true">
-                    <dxo-label format="shortDate"></dxo-label>
-                </dxo-argument-axis>
+                <!-- Volume -->
+                <dxi-series
+                    pane="Volume"
+                    color="#03a9f4"
+                    type="bar"
+                    valueField="volume"
+                    name="Volume">
+                <dxo-aggregation [enabled]="true" method="sum"></dxo-aggregation>
+                </dxi-series>
                 <!-- Y axis options-->
-                <dxi-value-axis [tickInterval]="10">
-                    <dxo-title text="US dollars"></dxo-title>
+                <dxi-pane [height]="400" name="Stock"></dxi-pane>
+                <dxi-pane [height]="100" name="Volume"></dxi-pane>
+                <dxo-margin [right]="30"></dxo-margin>
+                <dxo-zoom-and-pan argumentAxis="both"></dxo-zoom-and-pan>
+                <dxo-behavior callValueChanged="onMoving"></dxo-behavior>
+                <dxi-value-axis [placeholderSize]="50" pane="Stock">
                     <dxo-label>
                         <dxo-format
                             type="currency"
@@ -34,15 +56,109 @@
                         </dxo-format>
                     </dxo-label>
                 </dxi-value-axis>
+
+                <dxi-value-axis pane="Volume">
+                    <dxo-label>
+                        <dxo-format
+                            type="currency"
+                            [precision]="0">
+                        </dxo-format>
+                    </dxo-label>
+                </dxi-value-axis>
+                <!-- common configurations for all the series in the chart -->
+                <dxo-common-series-settings
+                    argumentField="time">
+                </dxo-common-series-settings>
+                <!-- X axis options-->
+                <dxo-argument-axis 
+                    [(visualRange)]="visualRange" 
+                    [workdaysOnly]="true">
+                    <dxo-label format="shortDate"></dxo-label>
+                </dxo-argument-axis>
+                
                 <!--export option in the right top part-->
                 <dxo-export [enabled]="true"></dxo-export>
                 <!-- Tooltips-->
                 <dxo-tooltip
                     [enabled]="true"
-                    location="edge"
-                    [customizeTooltip]="customizeTooltip">
+                    [shared]="true" 
+                    contentTemplate="content">
                 </dxo-tooltip>
+                <!-- legends -->
+                <dxo-legend
+                verticalAlignment="top"
+                horizontalAlignment="center"></dxo-legend>
+                <!-- crosshaire -->
+                 <dxo-crosshair
+                    [enabled]="true"
+                    color="#949494"
+                    [width]="3"
+                    dashStyle="dot">
+                    
+                </dxo-crosshair>
+
+                <!-- Tooltip component template -->
+
+                <div *dxTemplate="let info of 'content'" class='state-tooltip'>
+                    <div class='tooltip-template'>
+                        
+                        <div *ngIf="info.point.data.open">
+                            <span>Open: </span>:
+                            {{info.point.data.open}}
+                        </div>
+                        <div *ngIf="info.point.data.high">
+                            <span>High: </span>
+                            {{info.point.data.high}}
+                        </div>
+                        <div *ngIf="info.point.data.low">
+                            <span>Low: </span>
+                            {{info.point.data.low}}
+                        </div>
+                        <div *ngIf="info.point.data.close">
+                            <span>Close: </span>
+                            {{info.point.data.close}}
+                        </div>
+                        <div *ngIf="info.point.data.volume">
+                            <span>Volume: </span>
+                            {{info.point.data.volume}}
+                        </div>
+                        <div >
+                            <span>Date: </span>
+                            {{info.point.data.time | date}}
+                        </div>
+                    </div>
+                </div>
+
             </dx-chart>
 
+            <!-- Range selector -->
+            <dx-range-selector
+                [dataSource]="data"
+                [(value)]="visualRange">
+                <dxo-margin
+                    [left]="60"
+                    [right]="10">
+                </dxo-margin>
+                <dxo-size [height]="120"></dxo-size>
+                <dxo-scale
+                    minorTickInterval="day"
+                    tickInterval="month"
+                    valueType="datetime"
+                    aggregationInterval="week"
+                    [placeholderHeight]="20">
+                </dxo-scale>
+                <dxo-behavior
+                    callValueChanged="onMoving"
+                    [snapToTicks]="false">
+                </dxo-behavior>
+                <dxo-chart >
+                    <dxo-value-axis valueType="numeric"></dxo-value-axis>
+                    <dxi-series
+                        type="line"
+                        valueField="close"
+                        argumentField="time">
+                    </dxi-series>
+                </dxo-chart>
+            </dx-range-selector>
         </div>
     </div>

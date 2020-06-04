@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-
 import { ApiCommService } from '../../shared/services/api-comm.service'
 import { DxChartComponent } from 'devextreme-angular';
 @Component({
@@ -8,7 +7,7 @@ import { DxChartComponent } from 'devextreme-angular';
   styleUrls: ['./chart.component.scss']
 })
 export class ChartComponent implements OnInit {
-  //@ViewChild(DxChartComponent, { static: false }) chart: DxChartComponent;
+  @ViewChild(DxChartComponent, { static: false }) chart: DxChartComponent;
   visualRange: any = {};
   public data =[];
   public Stockdata=[];
@@ -33,17 +32,19 @@ export class ChartComponent implements OnInit {
 
   }
 
+  legendClick(e: any) {
+    var series = e.target;
+    if(series.isVisible()) { 
+        series.hide();
+    } else {
+        series.show();
+    }
+  }
+
+  valueChanged(e: any) {
+    this.chart.instance.zoomArgument(new Date(e.value[0]), new Date(e.value[1]));
+  }
   
-    //the tooltips
-    
-  customizeTooltip(arg) {
-    return {
-        text: "Open: $" + arg.openValue + "<br/>" +
-            "Close: $" + arg.closeValue + "<br/>" +
-            "High: $" + arg.highValue + "<br/>" +
-            "Low: $" + arg.lowValue + "<br/>"
-    };
-}
   ngOnInit() {
     
   }
