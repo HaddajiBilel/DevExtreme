@@ -47,7 +47,6 @@
                 <dxi-pane [height]="100" name="Volume"></dxi-pane>
                 <dxo-margin [right]="30"></dxo-margin>
                 <dxo-zoom-and-pan argumentAxis="both"></dxo-zoom-and-pan>
-                <dxo-behavior callValueChanged="onMoving"></dxo-behavior>
                 <dxi-value-axis [placeholderSize]="50" pane="Stock">
                     <dxo-label>
                         <dxo-format
@@ -67,7 +66,7 @@
                 </dxi-value-axis>
                 <!-- common configurations for all the series in the chart -->
                 <dxo-common-series-settings
-                    argumentField="time">
+                    argumentField="date">
                 </dxo-common-series-settings>
                 <!-- X axis options-->
                 <dxo-argument-axis 
@@ -124,7 +123,7 @@
                         </div>
                         <div >
                             <span>Date: </span>
-                            {{info.point.data.time | date}}
+                            {{info.point.data.date | date}}
                         </div>
                     </div>
                 </div>
@@ -156,7 +155,7 @@
                     <dxi-series
                         type="line"
                         valueField="close"
-                        argumentField="time">
+                        argumentField="date">
                     </dxi-series>
                 </dxo-chart>
             </dx-range-selector>

@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiCommService } from '../../shared/services/api-comm.service'
 import { DxChartComponent } from 'devextreme-angular';
+
 @Component({
   selector: 'app-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss']
 })
+
 export class ChartComponent implements OnInit {
   @ViewChild(DxChartComponent, { static: false }) chart: DxChartComponent;
   visualRange: any = {};
@@ -19,7 +21,7 @@ export class ChartComponent implements OnInit {
         console.log(item);
         let ticker=
         {
-           time: new Date(Data[item]['date']),
+           date: new Date(Data[item]['date']),
            open: Number(Data[item]['open']), 
            high: Number(Data[item]['high']), 
            low: Number(Data[item]['low']), 
@@ -39,10 +41,6 @@ export class ChartComponent implements OnInit {
     } else {
         series.show();
     }
-  }
-
-  valueChanged(e: any) {
-    this.chart.instance.zoomArgument(new Date(e.value[0]), new Date(e.value[1]));
   }
   
   ngOnInit() {
